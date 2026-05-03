@@ -1,0 +1,272 @@
+[
+{
+  "model": "auth.user",
+  "pk": 1,
+  "fields": {
+    "password": "pbkdf2_sha256$1200000$lDOkG5I3q6MDzwPZ19olWR$b3g8LCrH3B67qWwOUwY6hACc9ZosJwWgKExg2SoX/X4=",
+    "last_login": "2026-05-03T17:27:38.487Z",
+    "is_superuser": true,
+    "username": "daniel",
+    "first_name": "",
+    "last_name": "",
+    "email": "",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2026-05-03T14:25:56.592Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "pk42h20b7gpea1ztwh3smhmvfxreot1h",
+  "fields": {
+    "session_data": ".eJxVjDEOwjAMAP_iGUVJTULTkZ03RK7t0AJKpKadEH9HlTrAene6NyTa1iltTZc0Cwzg4PTLRuKnll3Ig8q9Gq5lXebR7Ik5bDO3Kvq6Hu3fYKI2wQCU6SLcIWu00osPlDn6oEjI4RzQusBeO3Kxiz069IxifbQcs7IVB58v-dE3-w:1wJabS:vXYPpX4wBx0KRQlTpJ-XLVmaCyy10gxu1_yBiiXFXQw",
+    "expire_date": "2026-05-17T17:27:38.490Z"
+  }
+},
+{
+  "model": "garden.plantcategory",
+  "pk": 1,
+  "fields": {
+    "name": "Brassicas",
+    "color": "#99c1f1"
+  }
+},
+{
+  "model": "garden.plantcategory",
+  "pk": 2,
+  "fields": {
+    "name": "Tubers",
+    "color": "#986a44"
+  }
+},
+{
+  "model": "garden.plantcategory",
+  "pk": 3,
+  "fields": {
+    "name": "Legumes",
+    "color": "#e66100"
+  }
+},
+{
+  "model": "garden.generalarea",
+  "pk": 1,
+  "fields": {
+    "name": "Veg patch",
+    "description": ""
+  }
+},
+{
+  "model": "garden.generalarea",
+  "pk": 2,
+  "fields": {
+    "name": "Greenhouse",
+    "description": ""
+  }
+},
+{
+  "model": "garden.location",
+  "pk": 1,
+  "fields": {
+    "name": "F1",
+    "description": "",
+    "area": 1
+  }
+},
+{
+  "model": "garden.location",
+  "pk": 2,
+  "fields": {
+    "name": "F2",
+    "description": "",
+    "area": 1
+  }
+},
+{
+  "model": "garden.location",
+  "pk": 3,
+  "fields": {
+    "name": "F3",
+    "description": "",
+    "area": 1
+  }
+},
+{
+  "model": "garden.location",
+  "pk": 4,
+  "fields": {
+    "name": "C1",
+    "description": "",
+    "area": 1
+  }
+},
+{
+  "model": "garden.location",
+  "pk": 5,
+  "fields": {
+    "name": "C2",
+    "description": "",
+    "area": 1
+  }
+},
+{
+  "model": "garden.location",
+  "pk": 6,
+  "fields": {
+    "name": "C3",
+    "description": "",
+    "area": 1
+  }
+},
+{
+  "model": "garden.location",
+  "pk": 7,
+  "fields": {
+    "name": "Right bench",
+    "description": "",
+    "area": 2
+  }
+},
+{
+  "model": "garden.plant",
+  "pk": 1,
+  "fields": {
+    "name": "Potatoes",
+    "category": 2,
+    "notes": ""
+  }
+},
+{
+  "model": "garden.plant",
+  "pk": 2,
+  "fields": {
+    "name": "Purple sprouting broccoli",
+    "category": 1,
+    "notes": ""
+  }
+},
+{
+  "model": "garden.plant",
+  "pk": 3,
+  "fields": {
+    "name": "Broad beans",
+    "category": 3,
+    "notes": ""
+  }
+},
+{
+  "model": "garden.plantjourney",
+  "pk": 1,
+  "fields": {
+    "plant": 1,
+    "label": "",
+    "notes": "",
+    "created_at": "2026-05-03"
+  }
+},
+{
+  "model": "garden.plantjourney",
+  "pk": 2,
+  "fields": {
+    "plant": 2,
+    "label": "",
+    "notes": "",
+    "created_at": "2026-05-03"
+  }
+},
+{
+  "model": "garden.plantjourney",
+  "pk": 3,
+  "fields": {
+    "plant": 3,
+    "label": "",
+    "notes": "",
+    "created_at": "2026-05-03"
+  }
+},
+{
+  "model": "garden.plantjourneystep",
+  "pk": 1,
+  "fields": {
+    "journey": 1,
+    "step_type": "plant",
+    "location": 1,
+    "start_date": "2026-04-01",
+    "end_date": "2026-06-10",
+    "notes": ""
+  }
+},
+{
+  "model": "garden.plantjourneystep",
+  "pk": 2,
+  "fields": {
+    "journey": 1,
+    "step_type": "plant",
+    "location": 3,
+    "start_date": "2026-04-01",
+    "end_date": "2026-08-03",
+    "notes": ""
+  }
+},
+{
+  "model": "garden.plantjourneystep",
+  "pk": 3,
+  "fields": {
+    "journey": 1,
+    "step_type": "harvest",
+    "location": 1,
+    "start_date": "2026-06-10",
+    "end_date": "2026-06-10",
+    "notes": ""
+  }
+},
+{
+  "model": "garden.plantjourneystep",
+  "pk": 4,
+  "fields": {
+    "journey": 2,
+    "step_type": "plant",
+    "location": 4,
+    "start_date": "2025-11-01",
+    "end_date": "2026-04-26",
+    "notes": ""
+  }
+},
+{
+  "model": "garden.plantjourneystep",
+  "pk": 5,
+  "fields": {
+    "journey": 2,
+    "step_type": "harvest",
+    "location": 4,
+    "start_date": "2026-04-26",
+    "end_date": "2026-04-26",
+    "notes": ""
+  }
+},
+{
+  "model": "garden.plantjourneystep",
+  "pk": 6,
+  "fields": {
+    "journey": 3,
+    "step_type": "seed",
+    "location": 7,
+    "start_date": "2026-03-21",
+    "end_date": "2026-05-01",
+    "notes": ""
+  }
+},
+{
+  "model": "garden.plantjourneystep",
+  "pk": 7,
+  "fields": {
+    "journey": 3,
+    "step_type": "plant",
+    "location": 4,
+    "start_date": "2026-05-01",
+    "end_date": "2026-07-03",
+    "notes": ""
+  }
+}
+]
