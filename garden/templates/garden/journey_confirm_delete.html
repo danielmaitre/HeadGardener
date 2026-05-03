@@ -4,7 +4,7 @@
 {% block content %}
 <h1 class="h4 mb-3">Delete journey</h1>
 <div class="alert alert-danger">
-  <p class="mb-0">Are you sure you want to delete the journey <strong>{{ object.label|default:"(unnamed)" }}</strong> for <strong>{{ object.plant.name }}</strong>? All steps will be removed.</p>
+  <p class="mb-0">Are you sure you want to delete the journey <strong>{{ object.display_label }}</strong> for <strong>{{ object.plant.name }}</strong>? All steps will be removed.</p>
 </div>
 <form method="post">
   {% csrf_token %}

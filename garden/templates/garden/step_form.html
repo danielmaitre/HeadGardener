@@ -7,11 +7,11 @@
     <li class="breadcrumb-item"><a href="{% url 'plant-list' %}">Plants</a></li>
     {% if object %}
       <li class="breadcrumb-item"><a href="{% url 'plant-detail' object.journey.plant.pk %}">{{ object.journey.plant.name }}</a></li>
-      <li class="breadcrumb-item"><a href="{% url 'journey-detail' object.journey.pk %}">{{ object.journey.label|default:"Journey" }}</a></li>
+      <li class="breadcrumb-item"><a href="{% url 'journey-detail' object.journey.pk %}">{{ object.journey.display_label }}</a></li>
       <li class="breadcrumb-item active">Edit step</li>
     {% else %}
       <li class="breadcrumb-item"><a href="{% url 'plant-detail' journey.plant.pk %}">{{ journey.plant.name }}</a></li>
-      <li class="breadcrumb-item"><a href="{% url 'journey-detail' journey.pk %}">{{ journey.label|default:"Journey" }}</a></li>
+      <li class="breadcrumb-item"><a href="{% url 'journey-detail' journey.pk %}">{{ journey.display_label }}</a></li>
       <li class="breadcrumb-item active">New step</li>
     {% endif %}
   </ol>

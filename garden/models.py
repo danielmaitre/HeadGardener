@@ -66,6 +66,19 @@ class PlantJourney(models.Model):
         verbose_name_plural = "plant journeys"
         ordering = ["-created_at"]
 
+    @property
+    def display_label(self):
+        if self.label:
+            return self.label
+        from django.db.models import Min, Max
+        agg = self.steps.aggregate(first=Min("start_date"), last=Max("end_date"))
+        first, last = agg["first"], agg["last"]
+        if first is None:
+            return "No steps yet"
+        fmt_first = first.strftime("%-d %b %Y") if first.year != (last.year if last else first.year) else first.strftime("%-d %b")
+        fmt_last = last.strftime("%-d %b %Y") if last else None
+        return f"{fmt_first} → {fmt_last}" if fmt_last else f"{fmt_first} →"
+
     def __str__(self):
         suffix = f" — {self.label}" if self.label else ""
         return f"{self.plant.name}{suffix}"
@@ -97,6 +110,18 @@ class PlantJourneyStep(models.Model):
 
     class Meta:
         ordering = ["start_date"]
+
+    _ICONS = {
+        "plan":    "fa-solid fa-clipboard-list",
+        "seed":    "fa-solid fa-seedling",
+        "plant":   "fa-solid fa-leaf",
+        "repot":   "fa-solid fa-arrows-rotate",
+        "harvest": "fa-solid fa-wheat-awn",
+    }
+
+    @property
+    def icon(self):
+        return self._ICONS.get(self.step_type, "fa-solid fa-circle")
 
     def __str__(self):
         return f"{self.get_step_type_display()} — {self.journey.plant.name}"

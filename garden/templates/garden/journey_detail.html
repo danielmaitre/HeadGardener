@@ -6,13 +6,13 @@
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a href="{% url 'plant-list' %}">Plants</a></li>
     <li class="breadcrumb-item"><a href="{% url 'plant-detail' journey.plant.pk %}">{{ journey.plant.name }}</a></li>
-    <li class="breadcrumb-item active">{{ journey.label|default:"Journey" }}</li>
+    <li class="breadcrumb-item active">{{ journey.display_label }}</li>
   </ol>
 </nav>
 
 <div class="d-flex justify-content-between align-items-start mb-4">
   <div>
-    <h1 class="h3 mb-1">{{ journey.label|default:"Journey" }}</h1>
+    <h1 class="h3 mb-1">{{ journey.display_label }}</h1>
     <small class="text-muted">{{ journey.plant.name }} · started {{ journey.created_at }}</small>
   </div>
   <div>
@@ -34,7 +34,7 @@
   <div class="list-group-item">
     <div class="d-flex justify-content-between align-items-start">
       <div>
-        <span class="badge bg-success me-2">{{ step.get_step_type_display }}</span>
+        <span class="badge bg-success me-2"><i class="{{ step.icon }} me-1"></i>{{ step.get_step_type_display }}</span>
         <span class="fw-semibold">{{ step.start_date }}{% if step.end_date %} → {{ step.end_date }}{% endif %}</span>
         {% if step.location %}<span class="text-muted ms-2">@ {{ step.location }}</span>{% endif %}
         {% if step.notes %}<p class="mb-0 mt-1 small text-muted">{{ step.notes }}</p>{% endif %}

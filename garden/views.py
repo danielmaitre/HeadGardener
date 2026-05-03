@@ -134,7 +134,18 @@ class PlantJourneyStepCreateView(BootstrapFormMixin, CreateView):
 
     def form_valid(self, form):
         form.instance.journey_id = self.kwargs["journey_pk"]
-        return super().form_valid(form)
+        response = super().form_valid(form)
+        new_step = self.object
+        # Truncate any sibling step at the same location whose period contains the new start date
+        if new_step.location:
+            PlantJourneyStep.objects.filter(
+                journey=new_step.journey,
+                location=new_step.location,
+                start_date__lt=new_step.start_date,
+            ).filter(
+                Q(end_date__gte=new_step.start_date) | Q(end_date__isnull=True)
+            ).exclude(pk=new_step.pk).update(end_date=new_step.start_date)
+        return response
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
@@ -214,13 +225,6 @@ class AreaGanttView(DetailView):
     BAR_H = 26
     BAR_GAP = 4
     ROW_PAD = 8
-    STEP_ICONS = {
-        "plan":    "fa-solid fa-clipboard-list",
-        "seed":    "fa-solid fa-seedling",
-        "plant":   "fa-solid fa-leaf",
-        "repot":   "fa-solid fa-arrows-rotate",
-        "harvest": "fa-solid fa-wheat-awn",
-    }
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
@@ -276,7 +280,7 @@ class AreaGanttView(DetailView):
                     "width_pct": round(width, 4),
                     "color": step.journey.plant.category.color,
                     "label": step.journey.plant.name,
-                    "icon": self.STEP_ICONS.get(step.step_type, "fa-solid fa-circle"),
+                    "icon": step.icon,
                     "journey_pk": step.journey.pk,
                     "tooltip": (
                         f"{step.journey.plant.name} — {step.get_step_type_display()}"

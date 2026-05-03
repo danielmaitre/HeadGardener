@@ -28,7 +28,7 @@
         </td>
         <td>
           <a href="{% url 'journey-detail' journey.pk %}" class="text-decoration-none">
-            {{ journey.label|default:"<span class='text-muted fst-italic'>unlabelled</span>" }}
+            {{ journey.display_label }}
           </a>
         </td>
         <td>{{ journey.steps.count }}</td>

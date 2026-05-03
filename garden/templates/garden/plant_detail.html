@@ -34,7 +34,7 @@
   {% for journey in plant.journeys.all %}
   <a href="{% url 'journey-detail' journey.pk %}" class="list-group-item list-group-item-action">
     <div class="d-flex justify-content-between">
-      <span class="fw-semibold">{{ journey.label|default:"Unnamed journey" }}</span>
+      <span class="fw-semibold">{{ journey.display_label }}</span>
       <small class="text-muted">{{ journey.steps.count }} step{{ journey.steps.count|pluralize }}</small>
     </div>
     {% if journey.notes %}<small class="text-muted">{{ journey.notes|truncatechars:80 }}</small>{% endif %}
