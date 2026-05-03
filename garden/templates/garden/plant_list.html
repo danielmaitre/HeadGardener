@@ -1,0 +1,39 @@
+{% extends "garden/base.html" %}
+{% block title %}Plants — HeadGardener{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1 class="h3 mb-0">Plants</h1>
+  <a href="{% url 'plant-create' %}" class="btn btn-success">+ Add plant</a>
+</div>
+
+{% if plants %}
+<div class="table-responsive">
+  <table class="table table-hover align-middle">
+    <thead class="table-success">
+      <tr>
+        <th>Name</th>
+        <th>Category</th>
+        <th>Journeys</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for plant in plants %}
+      <tr>
+        <td><a href="{% url 'plant-detail' plant.pk %}" class="fw-semibold text-decoration-none">{{ plant.name }}</a></td>
+        <td><span class="badge" style="background:{{ plant.category.color }};">{{ plant.category }}</span></td>
+        <td>{{ plant.journeys.count }}</td>
+        <td class="text-end">
+          <a href="{% url 'plant-update' plant.pk %}" class="btn btn-sm btn-outline-secondary">Edit</a>
+          <a href="{% url 'plant-delete' plant.pk %}" class="btn btn-sm btn-outline-danger">Delete</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<p class="text-muted">No plants yet. <a href="{% url 'plant-create' %}">Add your first plant.</a></p>
+{% endif %}
+{% endblock %}

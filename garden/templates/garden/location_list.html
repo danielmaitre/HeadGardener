@@ -1,0 +1,38 @@
+{% extends "garden/base.html" %}
+{% block title %}Locations — HeadGardener{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1 class="h3 mb-0">Locations</h1>
+  <a href="{% url 'location-create' %}" class="btn btn-success">+ Add location</a>
+</div>
+
+{% if locations %}
+<div class="table-responsive">
+  <table class="table table-hover align-middle">
+    <thead class="table-success">
+      <tr>
+        <th>Name</th>
+        <th>Area</th>
+        <th>Description</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for loc in locations %}
+      <tr>
+        <td class="fw-semibold">{{ loc.name }}</td>
+        <td>{% if loc.area %}<span class="text-muted">{{ loc.area }}</span>{% else %}—{% endif %}</td>
+        <td class="text-muted">{{ loc.description|default:"—" }}</td>
+        <td class="text-end">
+          <a href="{% url 'location-update' loc.pk %}" class="btn btn-sm btn-outline-secondary">Edit</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<p class="text-muted">No locations yet. <a href="{% url 'location-create' %}">Add one.</a></p>
+{% endif %}
+{% endblock %}

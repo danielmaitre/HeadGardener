@@ -1,0 +1,56 @@
+{% extends "garden/base.html" %}
+{% block title %}{% if object %}Edit journey{% else %}New Journey{% endif %} — HeadGardener{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb" class="mb-3">
+  <ol class="breadcrumb">
+    {% if object %}
+      <li class="breadcrumb-item"><a href="{% url 'plant-list' %}">Plants</a></li>
+      <li class="breadcrumb-item"><a href="{% url 'plant-detail' object.plant.pk %}">{{ object.plant.name }}</a></li>
+      <li class="breadcrumb-item active">Edit journey</li>
+    {% elif plant %}
+      <li class="breadcrumb-item"><a href="{% url 'plant-list' %}">Plants</a></li>
+      <li class="breadcrumb-item"><a href="{% url 'plant-detail' plant.pk %}">{{ plant.name }}</a></li>
+      <li class="breadcrumb-item active">New journey</li>
+    {% else %}
+      <li class="breadcrumb-item"><a href="{% url 'journey-list' %}">Journeys</a></li>
+      <li class="breadcrumb-item active">New journey</li>
+    {% endif %}
+  </ol>
+</nav>
+
+<h1 class="h4 mb-4">
+  {% if object %}
+    Edit journey — {{ object.plant.name }}
+  {% elif plant %}
+    New journey for {{ plant.name }}
+  {% else %}
+    New journey
+  {% endif %}
+</h1>
+
+<div class="card" style="max-width: 480px;">
+  <div class="card-body">
+    <form method="post">
+      {% csrf_token %}
+      {% for field in form %}
+        <div class="mb-3">
+          <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+          {{ field }}
+          {% if field.errors %}<div class="text-danger small mt-1">{{ field.errors }}</div>{% endif %}
+        </div>
+      {% endfor %}
+      <div class="d-flex gap-2">
+        <button type="submit" class="btn btn-success">Save</button>
+        {% if object %}
+          <a href="{% url 'journey-detail' object.pk %}" class="btn btn-outline-secondary">Cancel</a>
+        {% elif plant %}
+          <a href="{% url 'plant-detail' plant.pk %}" class="btn btn-outline-secondary">Cancel</a>
+        {% else %}
+          <a href="{% url 'journey-list' %}" class="btn btn-outline-secondary">Cancel</a>
+        {% endif %}
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

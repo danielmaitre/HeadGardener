@@ -1,0 +1,38 @@
+{% extends "garden/base.html" %}
+{% block title %}Categories — HeadGardener{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1 class="h3 mb-0">Plant Categories</h1>
+  <a href="{% url 'category-create' %}" class="btn btn-success">+ Add category</a>
+</div>
+
+{% if categories %}
+<div class="table-responsive">
+  <table class="table table-hover align-middle">
+    <thead class="table-success">
+      <tr>
+        <th>Color</th>
+        <th>Name</th>
+        <th>Plants</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for cat in categories %}
+      <tr>
+        <td><span style="display:inline-block;width:1.5rem;height:1.5rem;border-radius:.25rem;background:{{ cat.color }};"></span></td>
+        <td class="fw-semibold">{{ cat.name }}</td>
+        <td>{{ cat.plants.count }}</td>
+        <td class="text-end">
+          <a href="{% url 'category-update' cat.pk %}" class="btn btn-sm btn-outline-secondary">Edit</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<p class="text-muted">No categories yet. <a href="{% url 'category-create' %}">Add one.</a></p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,48 @@
+{% extends "garden/base.html" %}
+{% block title %}Journeys — HeadGardener{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1 class="h3 mb-0">Journeys</h1>
+  <a href="{% url 'journey-create-standalone' %}" class="btn btn-success">+ New journey</a>
+</div>
+
+{% if journeys %}
+<div class="table-responsive">
+  <table class="table table-hover align-middle">
+    <thead class="table-success">
+      <tr>
+        <th>Plant</th>
+        <th>Label</th>
+        <th>Steps</th>
+        <th>Started</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for journey in journeys %}
+      <tr>
+        <td>
+          <span class="badge me-1" style="background:{{ journey.plant.category.color }};">{{ journey.plant.category }}</span>
+          <a href="{% url 'plant-detail' journey.plant.pk %}" class="fw-semibold text-decoration-none">{{ journey.plant.name }}</a>
+        </td>
+        <td>
+          <a href="{% url 'journey-detail' journey.pk %}" class="text-decoration-none">
+            {{ journey.label|default:"<span class='text-muted fst-italic'>unlabelled</span>" }}
+          </a>
+        </td>
+        <td>{{ journey.steps.count }}</td>
+        <td class="text-muted">{{ journey.created_at }}</td>
+        <td class="text-end">
+          <a href="{% url 'journey-update' journey.pk %}" class="btn btn-sm btn-outline-secondary">Edit</a>
+          <a href="{% url 'journey-delete' journey.pk %}" class="btn btn-sm btn-outline-danger">Delete</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<p class="text-muted">No journeys yet. <a href="{% url 'journey-create-standalone' %}">Create one.</a></p>
+{% endif %}
+{% endblock %}

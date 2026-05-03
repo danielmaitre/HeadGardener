@@ -1,0 +1,39 @@
+{% extends "garden/base.html" %}
+{% block title %}General Areas — HeadGardener{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1 class="h3 mb-0">General Areas</h1>
+  <a href="{% url 'area-create' %}" class="btn btn-success">+ Add area</a>
+</div>
+
+{% if areas %}
+<div class="table-responsive">
+  <table class="table table-hover align-middle">
+    <thead class="table-success">
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Locations</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for area in areas %}
+      <tr>
+        <td class="fw-semibold">{{ area.name }}</td>
+        <td class="text-muted">{{ area.description|default:"—" }}</td>
+        <td>{{ area.locations.count }}</td>
+        <td class="text-end">
+          <a href="{% url 'area-gantt' area.pk %}" class="btn btn-sm btn-outline-success">Gantt</a>
+          <a href="{% url 'area-update' area.pk %}" class="btn btn-sm btn-outline-secondary">Edit</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<p class="text-muted">No areas yet. <a href="{% url 'area-create' %}">Add one.</a></p>
+{% endif %}
+{% endblock %}

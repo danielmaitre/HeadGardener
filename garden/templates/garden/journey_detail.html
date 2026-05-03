@@ -1,0 +1,53 @@
+{% extends "garden/base.html" %}
+{% block title %}{{ journey }} — HeadGardener{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb" class="mb-3">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{% url 'plant-list' %}">Plants</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'plant-detail' journey.plant.pk %}">{{ journey.plant.name }}</a></li>
+    <li class="breadcrumb-item active">{{ journey.label|default:"Journey" }}</li>
+  </ol>
+</nav>
+
+<div class="d-flex justify-content-between align-items-start mb-4">
+  <div>
+    <h1 class="h3 mb-1">{{ journey.label|default:"Journey" }}</h1>
+    <small class="text-muted">{{ journey.plant.name }} · started {{ journey.created_at }}</small>
+  </div>
+  <div>
+    <a href="{% url 'journey-update' journey.pk %}" class="btn btn-outline-secondary btn-sm">Edit</a>
+    <a href="{% url 'journey-delete' journey.pk %}" class="btn btn-outline-danger btn-sm">Delete</a>
+  </div>
+</div>
+
+{% if journey.notes %}<p class="text-muted mb-4">{{ journey.notes }}</p>{% endif %}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h2 class="h5 mb-0">Steps</h2>
+  <a href="{% url 'step-create' journey.pk %}" class="btn btn-success btn-sm">+ Add step</a>
+</div>
+
+{% if journey.steps.all %}
+<div class="list-group">
+  {% for step in journey.steps.all %}
+  <div class="list-group-item">
+    <div class="d-flex justify-content-between align-items-start">
+      <div>
+        <span class="badge bg-success me-2">{{ step.get_step_type_display }}</span>
+        <span class="fw-semibold">{{ step.start_date }}{% if step.end_date %} → {{ step.end_date }}{% endif %}</span>
+        {% if step.location %}<span class="text-muted ms-2">@ {{ step.location }}</span>{% endif %}
+        {% if step.notes %}<p class="mb-0 mt-1 small text-muted">{{ step.notes }}</p>{% endif %}
+      </div>
+      <div class="ms-2 d-flex gap-1">
+        <a href="{% url 'step-update' step.pk %}" class="btn btn-sm btn-outline-secondary">Edit</a>
+        <a href="{% url 'step-delete' step.pk %}" class="btn btn-sm btn-outline-danger">Delete</a>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<p class="text-muted">No steps yet. <a href="{% url 'step-create' journey.pk %}">Add the first step.</a></p>
+{% endif %}
+{% endblock %}

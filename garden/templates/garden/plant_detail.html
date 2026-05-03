@@ -1,0 +1,47 @@
+{% extends "garden/base.html" %}
+{% block title %}{{ plant.name }} — HeadGardener{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb" class="mb-3">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{% url 'plant-list' %}">Plants</a></li>
+    <li class="breadcrumb-item active">{{ plant.name }}</li>
+  </ol>
+</nav>
+
+<div class="d-flex justify-content-between align-items-start mb-4">
+  <div>
+    <h1 class="h3 mb-1">{{ plant.name }}</h1>
+    <span class="badge fs-6" style="background:{{ plant.category.color }};">{{ plant.category }}</span>
+  </div>
+  <div>
+    <a href="{% url 'plant-update' plant.pk %}" class="btn btn-outline-secondary btn-sm">Edit</a>
+    <a href="{% url 'plant-delete' plant.pk %}" class="btn btn-outline-danger btn-sm">Delete</a>
+  </div>
+</div>
+
+{% if plant.notes %}
+<p class="text-muted mb-4">{{ plant.notes }}</p>
+{% endif %}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h2 class="h5 mb-0">Journeys</h2>
+  <a href="{% url 'journey-create' plant.pk %}" class="btn btn-success btn-sm">+ New journey</a>
+</div>
+
+{% if plant.journeys.all %}
+<div class="list-group">
+  {% for journey in plant.journeys.all %}
+  <a href="{% url 'journey-detail' journey.pk %}" class="list-group-item list-group-item-action">
+    <div class="d-flex justify-content-between">
+      <span class="fw-semibold">{{ journey.label|default:"Unnamed journey" }}</span>
+      <small class="text-muted">{{ journey.steps.count }} step{{ journey.steps.count|pluralize }}</small>
+    </div>
+    {% if journey.notes %}<small class="text-muted">{{ journey.notes|truncatechars:80 }}</small>{% endif %}
+  </a>
+  {% endfor %}
+</div>
+{% else %}
+<p class="text-muted">No journeys yet. <a href="{% url 'journey-create' plant.pk %}">Start one.</a></p>
+{% endif %}
+{% endblock %}

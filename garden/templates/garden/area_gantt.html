@@ -1,0 +1,186 @@
+{% extends "garden/base.html" %}
+{% block title %}{{ area.name }} — {{ year }} — HeadGardener{% endblock %}
+
+{% block extra_head %}
+<style>
+  .gantt-wrap {
+    overflow-x: auto;
+    border: 1px solid #dee2e6;
+    border-radius: .375rem;
+    background: #fff;
+  }
+  .gantt-chart { min-width: 720px; }
+
+  .gantt-row { display: flex; border-bottom: 1px solid #dee2e6; }
+  .gantt-row:last-child { border-bottom: none; }
+
+  .gantt-label {
+    flex: 0 0 160px;
+    width: 160px;
+    padding: 6px 10px;
+    border-right: 1px solid #dee2e6;
+    display: flex;
+    align-items: center;
+    font-size: .82rem;
+    word-break: break-word;
+    background: #f8f9fa;
+  }
+  .gantt-header .gantt-label {
+    font-weight: 700;
+    font-size: .8rem;
+    color: #6c757d;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    background: #f0f9f0;
+    height: 32px;
+  }
+
+  .gantt-timeline { flex: 1; position: relative; }
+  .gantt-header .gantt-timeline { height: 32px; }
+
+  .gantt-month-label {
+    position: absolute;
+    top: 0; height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: .72rem;
+    font-weight: 600;
+    color: #6c757d;
+    border-right: 1px solid #dee2e6;
+    box-sizing: border-box;
+    overflow: hidden;
+    white-space: nowrap;
+    user-select: none;
+  }
+
+  .gantt-gridline {
+    position: absolute;
+    top: 0; bottom: 0;
+    width: 1px;
+    background: #e9ecef;
+    pointer-events: none;
+  }
+
+  .gantt-today {
+    position: absolute;
+    top: 0; bottom: 0;
+    width: 2px;
+    background: #dc3545;
+    opacity: .7;
+    z-index: 10;
+    pointer-events: none;
+  }
+
+  .gantt-bar {
+    position: absolute;
+    border-radius: 4px;
+    height: {{ bar_h }}px;
+    display: flex;
+    align-items: center;
+    padding: 0 6px;
+    font-size: .68rem;
+    font-weight: 600;
+    color: #fff;
+    text-shadow: 0 1px 2px rgba(0,0,0,.35);
+    overflow: hidden;
+    white-space: nowrap;
+    cursor: default;
+    z-index: 5;
+    box-sizing: border-box;
+    transition: filter .1s;
+  }
+  .gantt-bar:hover { filter: brightness(1.18); z-index: 20; overflow: visible; }
+  a.gantt-bar { text-decoration: none; color: #fff; }
+</style>
+{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb" class="mb-3">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{% url 'area-list' %}">Areas</a></li>
+    <li class="breadcrumb-item active">{{ area.name }}</li>
+  </ol>
+</nav>
+
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
+  <h1 class="h3 mb-0">{{ area.name }} — Year view</h1>
+  <form method="get" class="d-flex align-items-center gap-2">
+    <label for="yearSel" class="mb-0 small text-muted">Year</label>
+    <select id="yearSel" name="year" class="form-select form-select-sm" style="width:auto;"
+            onchange="this.form.submit()">
+      {% for y in years %}
+      <option value="{{ y }}"{% if y == year %} selected{% endif %}>{{ y }}</option>
+      {% endfor %}
+    </select>
+  </form>
+</div>
+
+{% if rows %}
+<div class="gantt-wrap mb-2">
+  <div class="gantt-chart">
+
+    {# ── Header ────────────────────────────────────────────────── #}
+    <div class="gantt-row gantt-header">
+      <div class="gantt-label">Location</div>
+      <div class="gantt-timeline" style="height:32px;">
+        {% for month in months %}
+        <div class="gantt-month-label"
+             style="left:{{ month.left_pct }}%;width:{{ month.width_pct }}%;">
+          {{ month.name }}
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    {# ── Data rows ─────────────────────────────────────────────── #}
+    {% for row in rows %}
+    <div class="gantt-row" style="height:{{ row.height_px }}px;">
+      <div class="gantt-label">{{ row.location.name }}</div>
+      <div class="gantt-timeline">
+
+        {# Month grid lines #}
+        {% for month in months %}
+        <div class="gantt-gridline" style="left:{{ month.left_pct }}%;"></div>
+        {% endfor %}
+
+        {# Today line #}
+        {% if today_pct is not None %}
+        <div class="gantt-today" style="left:{{ today_pct }}%;"></div>
+        {% endif %}
+
+        {# Bars #}
+        {% for bar in row.bars %}
+        <a class="gantt-bar"
+           href="{% url 'journey-detail' bar.journey_pk %}"
+           style="left:{{ bar.left_pct }}%;width:{{ bar.width_pct }}%;top:{{ bar.top_px }}px;background:{{ bar.color }};"
+           title="{{ bar.tooltip }}">
+          <i class="{{ bar.icon }}" style="margin-right:4px;flex-shrink:0;"></i>{{ bar.label }}
+        </a>
+        {% endfor %}
+
+      </div>
+    </div>
+    {% endfor %}
+
+  </div>
+</div>
+
+<p class="small text-muted">
+  Bars are coloured by plant category.
+  {% if today_pct is not None %}
+    <span class="ms-2">
+      <span style="display:inline-block;width:10px;height:2px;background:#dc3545;vertical-align:middle;border-radius:1px;"></span>
+      Today
+    </span>
+  {% endif %}
+  Open-ended steps extend to the end of the year.
+</p>
+
+{% else %}
+<p class="text-muted">
+  No locations in this area yet.
+  <a href="{% url 'location-create' %}">Add a location</a> and assign it to <em>{{ area.name }}</em>.
+</p>
+{% endif %}
+{% endblock %}

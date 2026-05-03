@@ -1,0 +1,44 @@
+{% extends "garden/base.html" %}
+{% block title %}{% if object %}Edit step{% else %}New Step{% endif %} — HeadGardener{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb" class="mb-3">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{% url 'plant-list' %}">Plants</a></li>
+    {% if object %}
+      <li class="breadcrumb-item"><a href="{% url 'plant-detail' object.journey.plant.pk %}">{{ object.journey.plant.name }}</a></li>
+      <li class="breadcrumb-item"><a href="{% url 'journey-detail' object.journey.pk %}">{{ object.journey.label|default:"Journey" }}</a></li>
+      <li class="breadcrumb-item active">Edit step</li>
+    {% else %}
+      <li class="breadcrumb-item"><a href="{% url 'plant-detail' journey.plant.pk %}">{{ journey.plant.name }}</a></li>
+      <li class="breadcrumb-item"><a href="{% url 'journey-detail' journey.pk %}">{{ journey.label|default:"Journey" }}</a></li>
+      <li class="breadcrumb-item active">New step</li>
+    {% endif %}
+  </ol>
+</nav>
+
+<h1 class="h4 mb-4">{% if object %}Edit step{% else %}New step{% endif %}</h1>
+
+<div class="card" style="max-width: 480px;">
+  <div class="card-body">
+    <form method="post">
+      {% csrf_token %}
+      {% for field in form %}
+        <div class="mb-3">
+          <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+          {{ field }}
+          {% if field.errors %}<div class="text-danger small mt-1">{{ field.errors }}</div>{% endif %}
+        </div>
+      {% endfor %}
+      <div class="d-flex gap-2">
+        <button type="submit" class="btn btn-success">Save</button>
+        {% if object %}
+          <a href="{% url 'journey-detail' object.journey.pk %}" class="btn btn-outline-secondary">Cancel</a>
+        {% else %}
+          <a href="{% url 'journey-detail' journey.pk %}" class="btn btn-outline-secondary">Cancel</a>
+        {% endif %}
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
