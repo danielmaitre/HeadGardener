@@ -130,31 +130,41 @@ class AnnualTaskOverviewView(View):
         today = datetime.date.today()
         default_period = _MONTH_TO_PERIOD[today.month]
         try:
-            period = int(request.GET.get("period") or default_period)
+            start_period = int(request.GET.get("period") or default_period)
         except (ValueError, TypeError):
-            period = default_period
+            start_period = default_period
         try:
             year = int(request.GET.get("year") or today.year)
         except (ValueError, TypeError):
             year = today.year
 
-        base_qs = (
+        all_tasks = list(
             AnnualTask.objects
-            .filter(period=period)
+            .filter(period__gte=start_period)
             .annotate(is_done=Exists(
                 AnnualTaskCompletion.objects.filter(task=OuterRef("pk"), year=year)
             ))
             .select_related("plant", "plant__category")
-            .order_by("plant__name")
+            .order_by("period", "plant__name")
         )
 
+        period_dict = dict(AnnualTask.PERIOD_CHOICES)
+        sections = []
+        for p in range(start_period, 13):
+            period_tasks = [t for t in all_tasks if t.period == p]
+            if period_tasks:
+                sections.append({
+                    "period": p,
+                    "period_display": period_dict[p],
+                    "pending_tasks": [t for t in period_tasks if not t.is_done],
+                    "done_tasks":  [t for t in period_tasks if t.is_done],
+                })
+
         return render(request, "garden/annual_task_overview.html", {
-            "pending_tasks": base_qs.filter(is_done=False),
-            "done_tasks": base_qs.filter(is_done=True),
-            "period": period,
+            "sections": sections,
+            "start_period": start_period,
             "year": year,
             "period_choices": AnnualTask.PERIOD_CHOICES,
-            "period_display": dict(AnnualTask.PERIOD_CHOICES).get(period, ""),
         })
 
 
@@ -165,13 +175,17 @@ class AnnualTaskToggleView(View):
             year = int(request.POST.get("year") or datetime.date.today().year)
         except (ValueError, TypeError):
             year = datetime.date.today().year
+        try:
+            start_period = int(request.POST.get("start_period") or task.period)
+        except (ValueError, TypeError):
+            start_period = task.period
         completion = AnnualTaskCompletion.objects.filter(task=task, year=year).first()
         if completion:
             completion.delete()
         else:
             AnnualTaskCompletion.objects.create(task=task, year=year)
         return redirect(
-            reverse("annual-task-overview") + f"?period={task.period}&year={year}"
+            reverse("annual-task-overview") + f"?period={start_period}&year={year}"
         )
 
 

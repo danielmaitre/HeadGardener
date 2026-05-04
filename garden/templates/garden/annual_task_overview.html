@@ -1,15 +1,15 @@
 {% extends "garden/base.html" %}
-{% block title %}{{ period_display }} {{ year }} Tasks — HeadGardener{% endblock %}
+{% block title %}Annual Tasks — HeadGardener{% endblock %}
 
 {% block content %}
 <h1 class="h3 mb-4">Annual Tasks</h1>
 
 <form method="get" class="row g-2 align-items-end mb-4" style="max-width:480px;">
   <div class="col">
-    <label class="form-label mb-1 small text-muted">Period</label>
+    <label class="form-label mb-1 small text-muted">Tasks starting from</label>
     <select name="period" class="form-select" onchange="this.form.submit()">
       {% for value, label in period_choices %}
-        <option value="{{ value }}" {% if value == period %}selected{% endif %}>{{ label }}</option>
+        <option value="{{ value }}" {% if value == start_period %}selected{% endif %}>{{ label }}</option>
       {% endfor %}
     </select>
   </div>
@@ -19,7 +19,16 @@
   </div>
 </form>
 
-{% include "garden/_task_section.html" with title="Pending" tasks=pending_tasks is_done=False %}
-{% include "garden/_task_section.html" with title="Completed" tasks=done_tasks is_done=True %}
+{% if sections %}
+  {% for section in sections %}
+  <div class="mb-4">
+    <h2 class="h5 border-bottom pb-2 mb-3">{{ section.period_display }}</h2>
+    {% include "garden/_task_section.html" with title="Pending" tasks=section.pending_tasks is_done=False %}
+    {% include "garden/_task_section.html" with title="Completed" tasks=section.done_tasks is_done=True %}
+  </div>
+  {% endfor %}
+{% else %}
+<p class="text-muted">No tasks found from this period onwards.</p>
+{% endif %}
 
 {% endblock %}
