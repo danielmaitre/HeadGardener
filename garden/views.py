@@ -1,13 +1,20 @@
 import calendar
 import datetime
-from django.db.models import Q
-from django.shortcuts import get_object_or_404, redirect
+from django.db.models import Exists, OuterRef, Q
+from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy, reverse
 from django.views import View
 from django.views.generic import (
     ListView, DetailView, CreateView, UpdateView, DeleteView,
 )
-from .models import AnnualTask, GeneralArea, Plant, PlantCategory, PlantImage, Location, PlantJourney, PlantJourneyStep
+from .models import AnnualTask, AnnualTaskCompletion, GeneralArea, Plant, PlantCategory, PlantImage, Location, PlantJourney, PlantJourneyStep
+
+_MONTH_TO_PERIOD = {
+    3: 1, 4: 2, 5: 3,
+    6: 4, 7: 5, 8: 6,
+    9: 7, 10: 8, 11: 9,
+    12: 10, 1: 11, 2: 12,
+}
 from .forms import PlantCategoryForm, PlantForm, PlantImageUploadForm, PlantJourneyStepForm
 
 
@@ -99,6 +106,55 @@ class AnnualTaskDeleteView(DeleteView):
 
     def get_success_url(self):
         return reverse("plant-detail", kwargs={"pk": self.object.plant_id})
+
+
+class AnnualTaskOverviewView(View):
+    def get(self, request):
+        today = datetime.date.today()
+        default_period = _MONTH_TO_PERIOD[today.month]
+        try:
+            period = int(request.GET.get("period") or default_period)
+        except (ValueError, TypeError):
+            period = default_period
+        try:
+            year = int(request.GET.get("year") or today.year)
+        except (ValueError, TypeError):
+            year = today.year
+
+        tasks = (
+            AnnualTask.objects
+            .filter(period=period)
+            .annotate(is_done=Exists(
+                AnnualTaskCompletion.objects.filter(task=OuterRef("pk"), year=year)
+            ))
+            .select_related("plant", "plant__category")
+            .order_by("is_done", "plant__name")
+        )
+
+        return render(request, "garden/annual_task_overview.html", {
+            "tasks": tasks,
+            "period": period,
+            "year": year,
+            "period_choices": AnnualTask.PERIOD_CHOICES,
+            "period_display": dict(AnnualTask.PERIOD_CHOICES).get(period, ""),
+        })
+
+
+class AnnualTaskToggleView(View):
+    def post(self, request, pk):
+        task = get_object_or_404(AnnualTask, pk=pk)
+        try:
+            year = int(request.POST.get("year") or datetime.date.today().year)
+        except (ValueError, TypeError):
+            year = datetime.date.today().year
+        completion = AnnualTaskCompletion.objects.filter(task=task, year=year).first()
+        if completion:
+            completion.delete()
+        else:
+            AnnualTaskCompletion.objects.create(task=task, year=year)
+        return redirect(
+            reverse("annual-task-overview") + f"?period={task.period}&year={year}"
+        )
 
 
 class PlantDeleteView(DeleteView):

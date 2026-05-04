@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import AnnualTask, GeneralArea, PlantCategory, Location, Plant, PlantJourney, PlantJourneyStep
+from .models import AnnualTask, AnnualTaskCompletion, GeneralArea, PlantCategory, Location, Plant, PlantJourney, PlantJourneyStep
 
 
 class PlantJourneyStepInline(admin.TabularInline):
@@ -58,6 +58,12 @@ class PlantJourneyAdmin(admin.ModelAdmin):
     list_filter = ["plant__category"]
     search_fields = ["plant__name", "label"]
     inlines = [PlantJourneyStepInline]
+
+
+@admin.register(AnnualTaskCompletion)
+class AnnualTaskCompletionAdmin(admin.ModelAdmin):
+    list_display = ["task", "year", "completed_at"]
+    list_filter = ["year"]
 
 
 @admin.register(PlantJourneyStep)

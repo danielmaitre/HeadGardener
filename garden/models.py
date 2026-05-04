@@ -94,6 +94,15 @@ class AnnualTask(models.Model):
         return f"{self.get_period_display()} — {self.task}"
 
 
+class AnnualTaskCompletion(models.Model):
+    task = models.ForeignKey(AnnualTask, on_delete=models.CASCADE, related_name="completions")
+    year = models.PositiveSmallIntegerField()
+    completed_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = [("task", "year")]
+
+
 class PlantJourney(models.Model):
     plant = models.ForeignKey(Plant, on_delete=models.CASCADE, related_name="journeys")
     label = models.CharField(max_length=100, blank=True)

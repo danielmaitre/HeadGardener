@@ -3,6 +3,8 @@ from . import views
 
 urlpatterns = [
     # Annual tasks
+    path("tasks/", views.AnnualTaskOverviewView.as_view(), name="annual-task-overview"),
+    path("tasks/<int:pk>/toggle/", views.AnnualTaskToggleView.as_view(), name="annual-task-toggle"),
     path("plants/<int:plant_pk>/tasks/new/", views.AnnualTaskCreateView.as_view(), name="annual-task-create"),
     path("tasks/<int:pk>/edit/", views.AnnualTaskUpdateView.as_view(), name="annual-task-update"),
     path("tasks/<int:pk>/delete/", views.AnnualTaskDeleteView.as_view(), name="annual-task-delete"),

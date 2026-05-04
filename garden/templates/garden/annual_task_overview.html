@@ -1,0 +1,55 @@
+{% extends "garden/base.html" %}
+{% block title %}{{ period_display }} {{ year }} Tasks — HeadGardener{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h1 class="h3 mb-0">Annual Tasks</h1>
+</div>
+
+<form method="get" class="row g-2 align-items-end mb-4" style="max-width:480px;">
+  <div class="col">
+    <label class="form-label mb-1 small text-muted">Period</label>
+    <select name="period" class="form-select" onchange="this.form.submit()">
+      {% for value, label in period_choices %}
+        <option value="{{ value }}" {% if value == period %}selected{% endif %}>{{ label }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-auto">
+    <label class="form-label mb-1 small text-muted">Year</label>
+    <input type="number" name="year" value="{{ year }}" class="form-control" style="width:90px;" onchange="this.form.submit()">
+  </div>
+</form>
+
+{% if tasks %}
+<div class="list-group">
+  {% for task in tasks %}
+  <div class="list-group-item {% if task.is_done %}opacity-50{% endif %}">
+    <div class="d-flex justify-content-between align-items-start">
+      <div>
+        <span class="badge me-2" style="background:{{ task.plant.category.color }};">{{ task.plant.category }}</span>
+        <a href="{% url 'plant-detail' task.plant.pk %}" class="fw-semibold text-decoration-none {% if task.is_done %}text-decoration-line-through text-muted{% endif %}">{{ task.plant.name }}</a>
+        <span class="ms-2 {% if task.is_done %}text-muted{% endif %}">{{ task.task }}</span>
+        {% if task.notes %}<p class="mb-0 mt-1 small text-muted">{{ task.notes }}</p>{% endif %}
+      </div>
+      <form method="post" action="{% url 'annual-task-toggle' task.pk %}" class="ms-3 flex-shrink-0">
+        {% csrf_token %}
+        <input type="hidden" name="year" value="{{ year }}">
+        {% if task.is_done %}
+        <button type="submit" class="btn btn-sm btn-outline-secondary">
+          <i class="fa-solid fa-rotate-left me-1"></i>Undo
+        </button>
+        {% else %}
+        <button type="submit" class="btn btn-sm btn-success">
+          <i class="fa-solid fa-check me-1"></i>Done
+        </button>
+        {% endif %}
+      </form>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<p class="text-muted">No tasks for {{ period_display }} {% if tasks is not None %}{{ year }}{% endif %}.</p>
+{% endif %}
+{% endblock %}
