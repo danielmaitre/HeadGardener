@@ -9,6 +9,9 @@ gunicorn = "*"
 whitenoise = "*"
 dj-database-url = "*"
 psycopg2-binary = "*"
+django-storages = "*"
+boto3 = "*"
+pillow = "*"
 
 [dev-packages]
 

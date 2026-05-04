@@ -48,6 +48,7 @@ class Plant(models.Model):
         PlantCategory, on_delete=models.PROTECT, related_name="plants"
     )
     notes = models.TextField(blank=True)
+    image = models.ImageField(upload_to="plants/", blank=True, null=True)
 
     class Meta:
         ordering = ["name"]

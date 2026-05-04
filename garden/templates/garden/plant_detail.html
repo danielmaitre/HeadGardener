@@ -20,6 +20,10 @@
   </div>
 </div>
 
+{% if plant.image %}
+<img src="{{ plant.image.url }}" alt="{{ plant.name }}" class="img-fluid rounded mb-3" style="max-height: 320px; object-fit: cover;">
+{% endif %}
+
 {% if plant.notes %}
 <p class="text-muted mb-4">{{ plant.notes }}</p>
 {% endif %}

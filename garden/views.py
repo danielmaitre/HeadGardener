@@ -6,7 +6,7 @@ from django.views.generic import (
     ListView, DetailView, CreateView, UpdateView, DeleteView,
 )
 from .models import GeneralArea, Plant, PlantCategory, Location, PlantJourney, PlantJourneyStep
-from .forms import PlantCategoryForm, PlantJourneyStepForm
+from .forms import PlantCategoryForm, PlantForm, PlantJourneyStepForm
 
 
 class BootstrapFormMixin:
@@ -45,15 +45,15 @@ class PlantDetailView(DetailView):
 
 class PlantCreateView(BootstrapFormMixin, CreateView):
     model = Plant
+    form_class = PlantForm
     template_name = "garden/plant_form.html"
-    fields = ["name", "category", "notes"]
     success_url = reverse_lazy("plant-list")
 
 
 class PlantUpdateView(BootstrapFormMixin, UpdateView):
     model = Plant
+    form_class = PlantForm
     template_name = "garden/plant_form.html"
-    fields = ["name", "category", "notes"]
 
     def get_success_url(self):
         return reverse("plant-detail", kwargs={"pk": self.object.pk})

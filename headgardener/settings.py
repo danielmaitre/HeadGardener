@@ -76,11 +76,26 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-STORAGES = {
-    "default": {
-        "BACKEND": "django.core.files.storage.FileSystemStorage",
-    },
-    "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
-    },
-}
+_spaces_bucket = os.environ.get('SPACES_BUCKET_NAME')
+_spaces_region = os.environ.get('SPACES_REGION', 'ams3')
+
+if _spaces_bucket:
+    AWS_ACCESS_KEY_ID = os.environ.get('SPACES_ACCESS_KEY_ID')
+    AWS_SECRET_ACCESS_KEY = os.environ.get('SPACES_SECRET_ACCESS_KEY')
+    AWS_STORAGE_BUCKET_NAME = _spaces_bucket
+    AWS_S3_REGION_NAME = _spaces_region
+    AWS_S3_ENDPOINT_URL = f'https://{_spaces_region}.digitaloceanspaces.com'
+    AWS_DEFAULT_ACL = 'public-read'
+    AWS_S3_OBJECT_PARAMETERS = {'CacheControl': 'max-age=86400'}
+    MEDIA_URL = f'https://{_spaces_bucket}.{_spaces_region}.digitaloceanspaces.com/media/'
+    STORAGES = {
+        "default": {"BACKEND": "storages.backends.s3boto3.S3Boto3Storage"},
+        "staticfiles": {"BACKEND": "whitenoise.storage.CompressedStaticFilesStorage"},
+    }
+else:
+    MEDIA_URL = '/media/'
+    MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+    STORAGES = {
+        "default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
+        "staticfiles": {"BACKEND": "whitenoise.storage.CompressedStaticFilesStorage"},
+    }

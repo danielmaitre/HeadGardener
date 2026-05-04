@@ -12,6 +12,7 @@
   <table class="table table-hover align-middle">
     <thead class="table-success">
       <tr>
+        <th style="width:48px;"></th>
         <th>Name</th>
         <th>Category</th>
         <th>Journeys</th>
@@ -21,6 +22,11 @@
     <tbody>
       {% for plant in plants %}
       <tr>
+        <td>
+          {% if plant.image %}
+          <img src="{{ plant.image.url }}" alt="" class="rounded" style="width:40px;height:40px;object-fit:cover;">
+          {% endif %}
+        </td>
         <td><a href="{% url 'plant-detail' plant.pk %}" class="fw-semibold text-decoration-none">{{ plant.name }}</a></td>
         <td><span class="badge" style="background:{{ plant.category.color }};">{{ plant.category }}</span></td>
         <td>{{ plant.journeys.count }}</td>
