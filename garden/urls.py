@@ -8,6 +8,8 @@ urlpatterns = [
     path("plants/<int:pk>/", views.PlantDetailView.as_view(), name="plant-detail"),
     path("plants/<int:pk>/edit/", views.PlantUpdateView.as_view(), name="plant-update"),
     path("plants/<int:pk>/delete/", views.PlantDeleteView.as_view(), name="plant-delete"),
+    path("photos/<int:pk>/delete/", views.PlantImageDeleteView.as_view(), name="plant-image-delete"),
+    path("plants/<int:plant_pk>/photos/add/", views.PlantImageUploadView.as_view(), name="plant-image-upload"),
     path("plants/<int:plant_pk>/journeys/new/", views.PlantJourneyCreateView.as_view(), name="journey-create"),
 
     # Journeys

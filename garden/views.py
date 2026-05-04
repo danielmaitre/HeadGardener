@@ -1,12 +1,14 @@
 import calendar
 import datetime
 from django.db.models import Q
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy, reverse
+from django.views import View
 from django.views.generic import (
     ListView, DetailView, CreateView, UpdateView, DeleteView,
 )
-from .models import GeneralArea, Plant, PlantCategory, Location, PlantJourney, PlantJourneyStep
-from .forms import PlantCategoryForm, PlantForm, PlantJourneyStepForm
+from .models import GeneralArea, Plant, PlantCategory, PlantImage, Location, PlantJourney, PlantJourneyStep
+from .forms import PlantCategoryForm, PlantForm, PlantImageUploadForm, PlantJourneyStepForm
 
 
 class BootstrapFormMixin:
@@ -63,6 +65,23 @@ class PlantDeleteView(DeleteView):
     model = Plant
     template_name = "garden/plant_confirm_delete.html"
     success_url = reverse_lazy("plant-list")
+
+
+class PlantImageUploadView(View):
+    def post(self, request, plant_pk):
+        plant = get_object_or_404(Plant, pk=plant_pk)
+        for f in request.FILES.getlist("images"):
+            PlantImage.objects.create(plant=plant, image=f)
+        return redirect("plant-detail", pk=plant_pk)
+
+
+class PlantImageDeleteView(View):
+    def post(self, request, pk):
+        image = get_object_or_404(PlantImage, pk=pk)
+        plant_pk = image.plant_id
+        image.image.delete(save=False)
+        image.delete()
+        return redirect("plant-detail", pk=plant_pk)
 
 
 # ── PlantJourney ───────────────────────────────────────────────────────────────

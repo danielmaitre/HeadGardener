@@ -23,9 +23,11 @@
       {% for plant in plants %}
       <tr>
         <td>
-          {% if plant.image %}
-          <img src="{{ plant.image.url }}" alt="" class="rounded" style="width:40px;height:40px;object-fit:cover;">
+          {% with plant.images.first as thumb %}
+          {% if thumb %}
+          <img src="{{ thumb.image.url }}" alt="" class="rounded" style="width:40px;height:40px;object-fit:cover;">
           {% endif %}
+          {% endwith %}
         </td>
         <td><a href="{% url 'plant-detail' plant.pk %}" class="fw-semibold text-decoration-none">{{ plant.name }}</a></td>
         <td><span class="badge" style="background:{{ plant.category.color }};">{{ plant.category }}</span></td>

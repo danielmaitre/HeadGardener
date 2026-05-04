@@ -48,13 +48,22 @@ class Plant(models.Model):
         PlantCategory, on_delete=models.PROTECT, related_name="plants"
     )
     notes = models.TextField(blank=True)
-    image = models.ImageField(upload_to="plants/", blank=True, null=True)
 
     class Meta:
         ordering = ["name"]
 
     def __str__(self):
         return self.name
+
+
+class PlantImage(models.Model):
+    plant = models.ForeignKey(Plant, on_delete=models.CASCADE, related_name="images")
+    image = models.ImageField(upload_to="plants/")
+    caption = models.CharField(max_length=200, blank=True)
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["uploaded_at"]
 
 
 class PlantJourney(models.Model):

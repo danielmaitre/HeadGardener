@@ -1,5 +1,5 @@
 from django import forms
-from .models import Plant, PlantCategory, PlantJourneyStep
+from .models import Plant, PlantCategory, PlantJourneyStep, PlantImage
 
 
 class ColorInput(forms.TextInput):
@@ -24,7 +24,18 @@ class PlantCategoryForm(forms.ModelForm):
 class PlantForm(forms.ModelForm):
     class Meta:
         model = Plant
-        fields = ["name", "category", "notes", "image"]
+        fields = ["name", "category", "notes"]
+
+
+class MultipleFileInput(forms.FileInput):
+    allow_multiple_selected = True
+
+
+class PlantImageUploadForm(forms.Form):
+    images = forms.ImageField(
+        widget=MultipleFileInput(attrs={"accept": "image/*"}),
+        label="Photos",
+    )
 
 
 class PlantJourneyStepForm(forms.ModelForm):
