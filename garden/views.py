@@ -121,18 +121,19 @@ class AnnualTaskOverviewView(View):
         except (ValueError, TypeError):
             year = today.year
 
-        tasks = (
+        base_qs = (
             AnnualTask.objects
             .filter(period=period)
             .annotate(is_done=Exists(
                 AnnualTaskCompletion.objects.filter(task=OuterRef("pk"), year=year)
             ))
             .select_related("plant", "plant__category")
-            .order_by("is_done", "plant__name")
+            .order_by("plant__name")
         )
 
         return render(request, "garden/annual_task_overview.html", {
-            "tasks": tasks,
+            "pending_tasks": base_qs.filter(is_done=False),
+            "done_tasks": base_qs.filter(is_done=True),
             "period": period,
             "year": year,
             "period_choices": AnnualTask.PERIOD_CHOICES,
