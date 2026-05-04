@@ -25,7 +25,7 @@
         <td class="text-muted">{{ area.description|default:"—" }}</td>
         <td>{{ area.locations.count }}</td>
         <td class="text-end">
-          <a href="{% url 'area-gantt' area.pk %}" class="btn btn-sm btn-outline-success">Gantt</a>
+          <a href="{% url 'area-gantt' area.pk %}" class="btn btn-sm btn-outline-success">Yearly planner</a>
           <a href="{% url 'area-update' area.pk %}" class="btn btn-sm btn-outline-secondary">Edit</a>
         </td>
       </tr>
