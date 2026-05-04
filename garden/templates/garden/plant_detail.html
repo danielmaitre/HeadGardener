@@ -52,6 +52,33 @@
 </form>
 
 <div class="d-flex justify-content-between align-items-center mb-3">
+  <h2 class="h5 mb-0">Annual Tasks</h2>
+  <a href="{% url 'annual-task-create' plant.pk %}" class="btn btn-success btn-sm">+ Add task</a>
+</div>
+
+{% if plant.annual_tasks.all %}
+<div class="list-group mb-4">
+  {% for task in plant.annual_tasks.all %}
+  <div class="list-group-item">
+    <div class="d-flex justify-content-between align-items-start">
+      <div>
+        <span class="badge bg-success me-2">{{ task.get_period_display }}</span>
+        <span class="fw-semibold">{{ task.task }}</span>
+        {% if task.notes %}<p class="mb-0 mt-1 small text-muted">{{ task.notes }}</p>{% endif %}
+      </div>
+      <div class="ms-2 d-flex gap-1">
+        <a href="{% url 'annual-task-update' task.pk %}" class="btn btn-sm btn-outline-secondary">Edit</a>
+        <a href="{% url 'annual-task-delete' task.pk %}" class="btn btn-sm btn-outline-danger">Delete</a>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<p class="text-muted mb-4">No annual tasks yet. <a href="{% url 'annual-task-create' plant.pk %}">Add one.</a></p>
+{% endif %}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
   <h2 class="h5 mb-0">Journeys</h2>
   <a href="{% url 'journey-create' plant.pk %}" class="btn btn-success btn-sm">+ New journey</a>
 </div>

@@ -7,7 +7,7 @@ from django.views import View
 from django.views.generic import (
     ListView, DetailView, CreateView, UpdateView, DeleteView,
 )
-from .models import GeneralArea, Plant, PlantCategory, PlantImage, Location, PlantJourney, PlantJourneyStep
+from .models import AnnualTask, GeneralArea, Plant, PlantCategory, PlantImage, Location, PlantJourney, PlantJourneyStep
 from .forms import PlantCategoryForm, PlantForm, PlantImageUploadForm, PlantJourneyStepForm
 
 
@@ -59,6 +59,46 @@ class PlantUpdateView(BootstrapFormMixin, UpdateView):
 
     def get_success_url(self):
         return reverse("plant-detail", kwargs={"pk": self.object.pk})
+
+
+class AnnualTaskCreateView(BootstrapFormMixin, CreateView):
+    model = AnnualTask
+    template_name = "garden/annual_task_form.html"
+    fields = ["period", "task", "notes"]
+
+    def form_valid(self, form):
+        form.instance.plant_id = self.kwargs["plant_pk"]
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx["plant"] = Plant.objects.get(pk=self.kwargs["plant_pk"])
+        return ctx
+
+    def get_success_url(self):
+        return reverse("plant-detail", kwargs={"pk": self.kwargs["plant_pk"]})
+
+
+class AnnualTaskUpdateView(BootstrapFormMixin, UpdateView):
+    model = AnnualTask
+    template_name = "garden/annual_task_form.html"
+    fields = ["period", "task", "notes"]
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx["plant"] = self.object.plant
+        return ctx
+
+    def get_success_url(self):
+        return reverse("plant-detail", kwargs={"pk": self.object.plant_id})
+
+
+class AnnualTaskDeleteView(DeleteView):
+    model = AnnualTask
+    template_name = "garden/annual_task_confirm_delete.html"
+
+    def get_success_url(self):
+        return reverse("plant-detail", kwargs={"pk": self.object.plant_id})
 
 
 class PlantDeleteView(DeleteView):

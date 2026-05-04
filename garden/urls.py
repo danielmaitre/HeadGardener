@@ -2,6 +2,11 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
+    # Annual tasks
+    path("plants/<int:plant_pk>/tasks/new/", views.AnnualTaskCreateView.as_view(), name="annual-task-create"),
+    path("tasks/<int:pk>/edit/", views.AnnualTaskUpdateView.as_view(), name="annual-task-update"),
+    path("tasks/<int:pk>/delete/", views.AnnualTaskDeleteView.as_view(), name="annual-task-delete"),
+
     # Plants
     path("plants/", views.PlantListView.as_view(), name="plant-list"),
     path("plants/new/", views.PlantCreateView.as_view(), name="plant-create"),

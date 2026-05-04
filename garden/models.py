@@ -66,6 +66,34 @@ class PlantImage(models.Model):
         ordering = ["uploaded_at"]
 
 
+class AnnualTask(models.Model):
+    PERIOD_CHOICES = [
+        (1,  "Early Spring"),
+        (2,  "Mid Spring"),
+        (3,  "Late Spring"),
+        (4,  "Early Summer"),
+        (5,  "Mid Summer"),
+        (6,  "Late Summer"),
+        (7,  "Early Autumn"),
+        (8,  "Mid Autumn"),
+        (9,  "Late Autumn"),
+        (10, "Early Winter"),
+        (11, "Mid Winter"),
+        (12, "Late Winter"),
+    ]
+
+    plant = models.ForeignKey(Plant, on_delete=models.CASCADE, related_name="annual_tasks")
+    period = models.PositiveSmallIntegerField(choices=PERIOD_CHOICES)
+    task = models.CharField(max_length=200)
+    notes = models.TextField(blank=True)
+
+    class Meta:
+        ordering = ["period"]
+
+    def __str__(self):
+        return f"{self.get_period_display()} — {self.task}"
+
+
 class PlantJourney(models.Model):
     plant = models.ForeignKey(Plant, on_delete=models.CASCADE, related_name="journeys")
     label = models.CharField(max_length=100, blank=True)
