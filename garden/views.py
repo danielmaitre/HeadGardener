@@ -45,6 +45,23 @@ class PlantListView(ListView):
     template_name = "garden/plant_list.html"
     context_object_name = "plants"
 
+    def get_queryset(self):
+        qs = Plant.objects.select_related("category").prefetch_related("images", "journeys")
+        q = self.request.GET.get("q", "").strip()
+        category = self.request.GET.get("category", "").strip()
+        if q:
+            qs = qs.filter(name__icontains=q)
+        if category:
+            qs = qs.filter(category_id=category)
+        return qs
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx["categories"] = PlantCategory.objects.all()
+        ctx["q"] = self.request.GET.get("q", "")
+        ctx["selected_category"] = self.request.GET.get("category", "")
+        return ctx
+
 
 class PlantDetailView(DetailView):
     model = Plant

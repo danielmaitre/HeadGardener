@@ -7,6 +7,27 @@
   <a href="{% url 'plant-create' %}" class="btn btn-success">+ Add plant</a>
 </div>
 
+<form method="get" class="row g-2 mb-3">
+  <div class="col">
+    <input type="search" name="q" value="{{ q }}" class="form-control" placeholder="Search plants…">
+  </div>
+  <div class="col-auto">
+    <select name="category" class="form-select" onchange="this.form.submit()">
+      <option value="">All categories</option>
+      {% for cat in categories %}
+        <option value="{{ cat.pk }}" {% if selected_category == cat.pk|stringformat:"s" %}selected{% endif %}
+          style="background:{{ cat.color }};">{{ cat.name }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-auto">
+    <button type="submit" class="btn btn-outline-secondary">Search</button>
+    {% if q or selected_category %}
+    <a href="{% url 'plant-list' %}" class="btn btn-outline-secondary">Clear</a>
+    {% endif %}
+  </div>
+</form>
+
 {% if plants %}
 <div class="table-responsive">
   <table class="table table-hover align-middle">
@@ -42,6 +63,10 @@
   </table>
 </div>
 {% else %}
+{% if q or selected_category %}
+<p class="text-muted">No plants match your search.</p>
+{% else %}
 <p class="text-muted">No plants yet. <a href="{% url 'plant-create' %}">Add your first plant.</a></p>
+{% endif %}
 {% endif %}
 {% endblock %}
