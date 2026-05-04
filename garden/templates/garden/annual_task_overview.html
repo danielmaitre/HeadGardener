@@ -23,8 +23,12 @@
   {% for section in sections %}
   <div class="mb-4">
     <h2 class="h5 border-bottom pb-2 mb-3">{{ section.period_display }}</h2>
-    {% include "garden/_task_section.html" with title="Pending" tasks=section.pending_tasks is_done=False %}
-    {% include "garden/_task_section.html" with title="Completed" tasks=section.done_tasks is_done=True %}
+    {% if section.pending_tasks or section.done_tasks %}
+      {% include "garden/_task_section.html" with title="Pending" tasks=section.pending_tasks is_done=False %}
+      {% include "garden/_task_section.html" with title="Completed" tasks=section.done_tasks is_done=True %}
+    {% else %}
+      <p class="text-muted">No tasks for this period.</p>
+    {% endif %}
   </div>
   {% endfor %}
 {% else %}

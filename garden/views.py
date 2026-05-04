@@ -152,7 +152,7 @@ class AnnualTaskOverviewView(View):
         sections = []
         for p in range(start_period, 13):
             period_tasks = [t for t in all_tasks if t.period == p]
-            if period_tasks:
+            if period_tasks or p == start_period:
                 sections.append({
                     "period": p,
                     "period_display": period_dict[p],
