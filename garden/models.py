@@ -1,3 +1,4 @@
+import datetime
 from django.db import models
 
 
@@ -22,6 +23,17 @@ class GeneralArea(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class AreaImage(models.Model):
+    area = models.ForeignKey("GeneralArea", on_delete=models.CASCADE, related_name="images")
+    image = models.ImageField(upload_to="areas/")
+    date = models.DateField(default=datetime.date.today)
+    caption = models.CharField(max_length=200, blank=True)
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-date", "-uploaded_at"]
 
 
 class Location(models.Model):

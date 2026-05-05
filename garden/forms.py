@@ -1,5 +1,5 @@
 from django import forms
-from .models import Plant, PlantCategory, PlantJourneyStep, PlantImage
+from .models import AreaImage, Plant, PlantCategory, PlantJourneyStep, PlantImage
 
 
 class ColorInput(forms.TextInput):
@@ -19,6 +19,13 @@ class PlantCategoryForm(forms.ModelForm):
         model = PlantCategory
         fields = ["name", "color"]
         widgets = {"color": ColorInput()}
+
+
+class AreaImageForm(forms.ModelForm):
+    class Meta:
+        model = AreaImage
+        fields = ["date", "caption"]
+        widgets = {"date": DatePickerInput()}
 
 
 class PlantForm(forms.ModelForm):

@@ -7,7 +7,7 @@ from django.views import View
 from django.views.generic import (
     ListView, DetailView, CreateView, UpdateView, DeleteView,
 )
-from .models import AnnualTask, AnnualTaskCompletion, GeneralArea, Plant, PlantCategory, PlantImage, Location, PlantJourney, PlantJourneyStep
+from .models import AnnualTask, AnnualTaskCompletion, AreaImage, GeneralArea, Plant, PlantCategory, PlantImage, Location, PlantJourney, PlantJourneyStep
 
 _MONTH_TO_PERIOD = {
     3: 1, 4: 2, 5: 3,
@@ -15,7 +15,7 @@ _MONTH_TO_PERIOD = {
     9: 7, 10: 8, 11: 9,
     12: 10, 1: 11, 2: 12,
 }
-from .forms import PlantCategoryForm, PlantForm, PlantImageUploadForm, PlantJourneyStepForm
+from .forms import AreaImageForm, PlantCategoryForm, PlantForm, PlantImageUploadForm, PlantJourneyStepForm
 
 
 class BootstrapFormMixin:
@@ -364,6 +364,32 @@ class GeneralAreaUpdateView(BootstrapFormMixin, UpdateView):
     success_url = reverse_lazy("area-list")
 
 
+class AreaImageUploadView(View):
+    def post(self, request, area_pk):
+        area = get_object_or_404(GeneralArea, pk=area_pk)
+        for f in request.FILES.getlist("images"):
+            AreaImage.objects.create(area=area, image=f)
+        return redirect("area-gantt", pk=area_pk)
+
+
+class AreaImageUpdateView(BootstrapFormMixin, UpdateView):
+    model = AreaImage
+    form_class = AreaImageForm
+    template_name = "garden/area_image_form.html"
+
+    def get_success_url(self):
+        return reverse("area-gantt", kwargs={"pk": self.object.area_id})
+
+
+class AreaImageDeleteView(View):
+    def post(self, request, pk):
+        image = get_object_or_404(AreaImage, pk=pk)
+        area_pk = image.area_id
+        image.image.delete(save=False)
+        image.delete()
+        return redirect("area-gantt", pk=area_pk)
+
+
 class AreaGanttView(DetailView):
     model = GeneralArea
     template_name = "garden/area_gantt.html"
@@ -473,6 +499,7 @@ class AreaGanttView(DetailView):
             "rows": rows,
             "today_pct": today_pct,
             "bar_h": self.BAR_H,
+            "area_images": area.images.all(),
         })
         return ctx
 
