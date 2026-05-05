@@ -369,7 +369,7 @@ class AreaImageUploadView(View):
         area = get_object_or_404(GeneralArea, pk=area_pk)
         for f in request.FILES.getlist("images"):
             AreaImage.objects.create(area=area, image=f)
-        return redirect("area-gantt", pk=area_pk)
+        return redirect("area-journal", pk=area_pk)
 
 
 class AreaImageUpdateView(BootstrapFormMixin, UpdateView):
@@ -378,7 +378,7 @@ class AreaImageUpdateView(BootstrapFormMixin, UpdateView):
     template_name = "garden/area_image_form.html"
 
     def get_success_url(self):
-        return reverse("area-gantt", kwargs={"pk": self.object.area_id})
+        return reverse("area-journal", kwargs={"pk": self.object.area_id})
 
 
 class AreaImageDeleteView(View):
@@ -387,7 +387,18 @@ class AreaImageDeleteView(View):
         area_pk = image.area_id
         image.image.delete(save=False)
         image.delete()
-        return redirect("area-gantt", pk=area_pk)
+        return redirect("area-journal", pk=area_pk)
+
+
+class AreaJournalView(DetailView):
+    model = GeneralArea
+    template_name = "garden/area_journal.html"
+    context_object_name = "area"
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx["area_images"] = self.object.images.all()
+        return ctx
 
 
 class AreaGanttView(DetailView):
@@ -499,7 +510,6 @@ class AreaGanttView(DetailView):
             "rows": rows,
             "today_pct": today_pct,
             "bar_h": self.BAR_H,
-            "area_images": area.images.all(),
         })
         return ctx
 

@@ -1,0 +1,50 @@
+{% extends "garden/base.html" %}
+{% block title %}{{ area.name }} — Journal — HeadGardener{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb" class="mb-3">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{% url 'area-list' %}">Areas</a></li>
+    <li class="breadcrumb-item active">{{ area.name }} — Journal</li>
+  </ol>
+</nav>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h1 class="h3 mb-0">{{ area.name }} — Journal</h1>
+  <a href="{% url 'area-gantt' area.pk %}" class="btn btn-outline-success btn-sm">Yearly planner</a>
+</div>
+
+{% if area_images %}
+<div class="row g-3 mb-4">
+  {% for img in area_images %}
+  <div class="col-6 col-sm-4 col-md-3">
+    <div class="card h-100">
+      <img src="{{ img.image.url }}" alt="{{ img.caption }}" class="card-img-top" style="height:180px;object-fit:cover;">
+      <div class="card-body p-2">
+        <p class="small text-muted mb-1">{{ img.date }}</p>
+        {% if img.caption %}<p class="small mb-1">{{ img.caption }}</p>{% endif %}
+        <div class="d-flex gap-1">
+          <a href="{% url 'area-image-update' img.pk %}" class="btn btn-sm btn-outline-secondary py-0">Edit</a>
+          <form method="post" action="{% url 'area-image-delete' img.pk %}" class="d-inline">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-sm btn-outline-danger py-0">Delete</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<p class="text-muted mb-4">No photos yet.</p>
+{% endif %}
+
+<form method="post" action="{% url 'area-image-upload' area.pk %}" enctype="multipart/form-data">
+  {% csrf_token %}
+  <div class="input-group" style="max-width:480px;">
+    <input type="file" name="images" multiple accept="image/*" class="form-control">
+    <button type="submit" class="btn btn-success">Upload</button>
+  </div>
+</form>
+
+{% endblock %}

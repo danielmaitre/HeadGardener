@@ -41,6 +41,7 @@ urlpatterns = [
     path("areas/new/", views.GeneralAreaCreateView.as_view(), name="area-create"),
     path("areas/<int:pk>/edit/", views.GeneralAreaUpdateView.as_view(), name="area-update"),
     path("areas/<int:pk>/gantt/", views.AreaGanttView.as_view(), name="area-gantt"),
+    path("areas/<int:pk>/journal/", views.AreaJournalView.as_view(), name="area-journal"),
     path("areas/<int:area_pk>/photos/add/", views.AreaImageUploadView.as_view(), name="area-image-upload"),
     path("area-photos/<int:pk>/edit/", views.AreaImageUpdateView.as_view(), name="area-image-update"),
     path("area-photos/<int:pk>/delete/", views.AreaImageDeleteView.as_view(), name="area-image-delete"),

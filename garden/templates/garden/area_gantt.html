@@ -184,39 +184,4 @@
 </p>
 {% endif %}
 
-<hr class="my-4">
-
-<div class="d-flex justify-content-between align-items-center mb-3">
-  <h2 class="h5 mb-0">Photos</h2>
-</div>
-
-{% if area_images %}
-<div class="row g-2 mb-3">
-  {% for img in area_images %}
-  <div class="col-6 col-sm-4 col-md-3 position-relative">
-    <img src="{{ img.image.url }}" alt="{{ img.caption }}" class="rounded w-100" style="height:160px;object-fit:cover;">
-    <div class="mt-1 d-flex justify-content-between align-items-center">
-      <small class="text-muted">{{ img.date }}</small>
-      <div class="d-flex gap-1">
-        <a href="{% url 'area-image-update' img.pk %}" class="btn btn-xs btn-outline-secondary" style="font-size:.7rem;padding:1px 6px;">Edit</a>
-        <form method="post" action="{% url 'area-image-delete' img.pk %}" class="d-inline">
-          {% csrf_token %}
-          <button type="submit" class="btn btn-xs btn-outline-danger" style="font-size:.7rem;padding:1px 6px;">×</button>
-        </form>
-      </div>
-    </div>
-    {% if img.caption %}<p class="small text-muted mb-0">{{ img.caption }}</p>{% endif %}
-  </div>
-  {% endfor %}
-</div>
-{% endif %}
-
-<form method="post" action="{% url 'area-image-upload' area.pk %}" enctype="multipart/form-data">
-  {% csrf_token %}
-  <div class="input-group" style="max-width:480px;">
-    <input type="file" name="images" multiple accept="image/*" class="form-control">
-    <button type="submit" class="btn btn-success">Upload</button>
-  </div>
-</form>
-
 {% endblock %}
